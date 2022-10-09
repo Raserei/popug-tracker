@@ -5,12 +5,21 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserAccountRepository extends JpaRepository<UserAccount, String> {
 
-    @Query("SELECT userAccount FROM UserAccount userAccount " +
-            "LEFT JOIN FETCH userAccount.roles roles " +
-            "WHERE userAccount.username = :username")
-    UserAccount findByUsername(String username);
+    Optional<UserAccount> findByPublicIdIgnoreCase(String publicId);
+
+
+    Optional<UserAccount> findByEmailIgnoreCaseAndPassword(String email, String password);
+
+    boolean existsByPublicIdAndIsActiveTrue(String publicId);
+
+
+
+
+
 
 }

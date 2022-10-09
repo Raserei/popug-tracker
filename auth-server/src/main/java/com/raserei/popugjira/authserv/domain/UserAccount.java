@@ -1,20 +1,26 @@
 package com.raserei.popugjira.authserv.domain;
 
+import lombok.*;
 import org.apache.commons.lang3.Validate;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
-public class UserAccount {
+@Data
+@NoArgsConstructor
+public class UserAccount implements UserDetails {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @Getter
+    @Setter
     private String id;
 
     @Column(nullable = false)
@@ -23,57 +29,40 @@ public class UserAccount {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    private final Set<UserAccountRole> roles;
+    @Column(nullable = false)
+    private String publicId;
 
-    public String getUsername() {
-        return username;
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private Boolean isActive;
+
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
+    private Set<UserAccountRole> roles;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
     }
 
-    public String getPassword() {
-        return password;
+    @Override
+    public boolean isAccountNonExpired() {
+        return isActive;
     }
 
-    public Set<UserAccountRole> getRoles() {
-        return new HashSet<>(roles);
+    @Override
+    public boolean isAccountNonLocked() {
+        return isActive;
     }
 
-    protected UserAccount() {
-        this.roles = new HashSet<>();
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return isActive;
     }
 
-    public static class Builder {
-
-        private final UserAccount userAccount = new UserAccount();
-
-        public Builder withUsername(String username) {
-            Validate.notEmpty(username, "username must not be empty");
-
-            userAccount.username = username;
-            return this;
-        }
-
-        public Builder withPassword(String password) {
-            Validate.notEmpty(password, "password must not be empty");
-
-            userAccount.password = password;
-            return this;
-        }
-
-        public Builder withRoles(Set<String> roles) {
-            if (Objects.nonNull(roles)) {
-                Set<UserAccountRole> userAccountRoles = roles.stream()
-                        .map(UserAccountRole::new)
-                        .collect(Collectors.toSet());
-
-                userAccount.roles.addAll(userAccountRoles);
-            }
-
-            return this;
-        }
-
-        public UserAccount build() {
-            return userAccount;
-        }
+    @Override
+    public boolean isEnabled() {
+        return isActive;
     }
 }
