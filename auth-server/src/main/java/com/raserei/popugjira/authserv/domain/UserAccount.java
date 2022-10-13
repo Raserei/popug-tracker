@@ -37,6 +37,12 @@ public class UserAccount implements UserDetails {
     private String email;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String surname;
+
+    @Column(nullable = false)
     private Boolean isActive;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},

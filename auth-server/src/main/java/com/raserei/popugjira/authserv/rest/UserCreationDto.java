@@ -14,5 +14,9 @@ public class UserCreationDto {
 
     private String email;
 
+    private String name;
+
+    private String surname;
+
     private List<String> userRoles;
 }

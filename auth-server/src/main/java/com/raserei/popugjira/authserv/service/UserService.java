@@ -67,6 +67,8 @@ public class UserService implements UserDetailsService {
         userAccount.setPublicId(UUID.randomUUID().toString());
         userAccountRepository.save(userAccount);
         messageClient.sendUserCreatedEvent(new UserCreatedEvent(userAccount.getPublicId(),
+                userAccount.getName(),
+                userAccount.getSurname(),
                 userAccount.getRoles()
                         .stream().map(UserAccountRole::getRole)
                         .toList()
