@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class AuthRequest {
 
-    private String login;
+    private String username;
 
-    private String pass;
+    private String password;
 }

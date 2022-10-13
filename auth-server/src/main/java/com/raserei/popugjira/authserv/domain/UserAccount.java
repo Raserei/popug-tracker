@@ -2,6 +2,7 @@ package com.raserei.popugjira.authserv.domain;
 
 import lombok.*;
 import org.apache.commons.lang3.Validate;
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,7 +39,8 @@ public class UserAccount implements UserDetails {
     @Column(nullable = false)
     private Boolean isActive;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+    fetch = FetchType.EAGER)
     private Set<UserAccountRole> roles;
 
     @Override

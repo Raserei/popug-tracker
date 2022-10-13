@@ -15,15 +15,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private UserService userService;
+    private final UserService userService;
 
-    public String getToken (String email, String password) throws IllegalAccessException {
-        UserAccount account = userService.getUser(email, password);
+    public String getToken (String username, String password) throws IllegalAccessException {
+        UserAccount account = userService.getUser(username, password);
         try {
             Algorithm algorithm = Algorithm.HMAC256("secret");
             return JWT.create()
                     .withIssuer("auth0")
-                    .withSubject(account.getId())
+                    .withSubject(account.getPublicId())
                     .sign(algorithm);
         } catch (JWTCreationException exception){
             throw new IllegalStateException();

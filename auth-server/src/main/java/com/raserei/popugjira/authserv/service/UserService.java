@@ -11,6 +11,9 @@ import com.raserei.popugjira.authserv.repository.UserRoleRepository;
 import com.raserei.popugjira.authserv.rest.UserCreationDto;
 import com.raserei.popugjira.authserv.rest.UserDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
 
     public final UserAccountRepository userAccountRepository;
 
@@ -30,8 +33,8 @@ public class UserService {
 
     public final EventProducer messageClient;
 
-    public UserAccount getUser(String email, String password) throws IllegalAccessException {
-        return userAccountRepository.findByEmailIgnoreCaseAndPassword(email, password).orElseThrow(IllegalAccessException::new);
+    public UserAccount getUser(String username, String password) throws IllegalAccessException {
+        return userAccountRepository.findByUsernameIgnoreCaseAndPassword(username, password).orElseThrow(IllegalAccessException::new);
     }
 
     public UserDto getUser(String publicId) throws UserNotFoundException {
@@ -84,5 +87,10 @@ public class UserService {
 
     public boolean validateUser(String publicId) {
         return userAccountRepository.existsByPublicIdAndIsActiveTrue(publicId);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userAccountRepository.findByUsername(username).orElseThrow(() ->new UsernameNotFoundException("User not found: " + username));
     }
 }

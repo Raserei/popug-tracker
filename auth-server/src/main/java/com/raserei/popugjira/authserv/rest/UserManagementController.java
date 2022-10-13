@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/users",
-        produces = "application/json",
-        consumes = "application/json")
+@RequestMapping(path = "/users")
 @RequiredArgsConstructor
 public class UserManagementController {
 

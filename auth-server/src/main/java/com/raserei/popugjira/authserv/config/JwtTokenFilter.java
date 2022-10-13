@@ -39,6 +39,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // Get authorization header and validate
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (StringUtils.isEmpty(header) || !header.startsWith("Bearer ")) {
+            chain.doFilter(request,response);
             return;
         }
 
@@ -61,7 +62,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (JWTVerificationException | UserNotFoundException e) {
-            return;
+            System.out.println(e);
+        } catch (Throwable ex) {
+            System.out.println(ex);
         }
         chain.doFilter(request, response);
     }
